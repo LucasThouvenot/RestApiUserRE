@@ -36,9 +36,9 @@ public class User {
     @Column(name = "est_actif")
     private Boolean actif;
 
-//    @OneToOne
-//    @JoinColumn(name="favorisId")
-//    private Favoris favoris;
+    @OneToOne
+    @JoinColumn(name="favorisId")
+    private Favoris favoris;
 //
 //    @OneToMany
 //    private List<Commentaire> commentaires;

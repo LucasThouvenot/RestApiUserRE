@@ -10,10 +10,11 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.security.web.header.Header;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
+import java.util.Optional;
 
 @RestController
 @CrossOrigin
@@ -48,7 +49,8 @@ public class UserController {
             MyUserDetails userDetails = (MyUserDetails)authentication.authenticate(
                     new UsernamePasswordAuthenticationToken(
                             user.getPseudo(),
-                            user.getPassword())
+                            user.getPassword()
+                    )
             ).getPrincipal();
 
             String jwt = jwtService.getJwtFromUser(userDetails);
@@ -60,5 +62,22 @@ public class UserController {
             return new ResponseEntity(e, HttpStatus.FORBIDDEN);
         }
     }
+
+    @GetMapping("/users")
+    public ResponseEntity<List<User>> getUsers(){
+        return new ResponseEntity<>(userDao.findAll(),HttpStatus.OK);
+    }
+
+    @GetMapping("/users/{id}")
+    public ResponseEntity<Optional<User>> getUser(@RequestHeader Integer id){
+        if(userDao.existsById(id)){
+            return new ResponseEntity<>(userDao.findById(id),HttpStatus.OK);
+        }
+        return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+    }
+
+//    @GetMapping("/users/{username}")
+//    public ResponseEntity<Optional<User>> getUser(@RequestHeader String username){
+//    }
 
 }
