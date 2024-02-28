@@ -13,6 +13,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -57,7 +58,8 @@ public class FavorisController {
                 Favoris favoris = user.getFavoris();
                 if (favoris == null) {
                     favoris = new Favoris();
-                    favoris.getRessources().add(ressource);
+                    favoris.setRessources(new ArrayList<>());
+                    favoris.addRessources(ressource);
                     favorisDao.save(favoris);
                     user.setFavoris(favoris);
                     userDao.save(user);
@@ -66,7 +68,7 @@ public class FavorisController {
                     favorisDao.save(favoris);
                 }
 
-                return new ResponseEntity<>(favoris.getRessources(), HttpStatus.CREATED);
+                return new ResponseEntity<>(favoris.getRessources(), HttpStatus.OK);
 
 
             }
@@ -76,5 +78,31 @@ public class FavorisController {
     }
 
     //supprimer un favoris
+    @DeleteMapping("users/{id}/favoris")
+    public ResponseEntity<List<Ressource>> removeRessource(@PathVariable(name = "id") Integer idUser,@RequestBody Ressource res) {
+        Optional<User> userOptional = userDao.findById(idUser);
+        if (userOptional.isPresent()) {
+            User user = userOptional.get();
+
+            Optional<Ressource> ressourceOptional = ressourceDao.findById(res.getId());
+            if (ressourceOptional.isPresent()) {
+                Ressource ressource = ressourceOptional.get();
+
+                Favoris favoris = user.getFavoris();
+                if (favoris == null) {
+                    return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+                } else {
+                    favoris.delRessource(ressource);
+                    favorisDao.save(favoris);
+                }
+
+                return new ResponseEntity<>(favoris.getRessources(), HttpStatus.OK);
+
+
+            }
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+        return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+    }
 
 }

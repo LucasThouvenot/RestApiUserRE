@@ -55,4 +55,12 @@ public class Favoris implements Serializable {
     public List<Ressource> getRessources() {
         return ressources;
     }
+
+    public void addRessources(Ressource ressource){
+        this.ressources.add(ressource);
+    }
+
+    public void delRessource(Ressource ressource){
+        this.ressources.remove(ressource);
+    }
 }
