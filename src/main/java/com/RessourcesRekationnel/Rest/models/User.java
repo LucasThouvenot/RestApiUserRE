@@ -37,7 +37,7 @@ public class User {
     private Boolean actif;
 
     @Lob
-    @Column(name="image_url")
+    @Column(name="image_url", columnDefinition="LONGBLOB")
     private byte[] imageUrl;
 
     private String token;

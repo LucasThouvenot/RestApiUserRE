@@ -90,7 +90,7 @@ public class UserController {
                 User user = oUser.get();
                 user.setImageUrl(image.getBytes());
                 userDao.save(user);
-                return new ResponseEntity<>(HttpStatus.OK);
+                return new ResponseEntity<>(user,HttpStatus.OK);
 
 
             }else{
