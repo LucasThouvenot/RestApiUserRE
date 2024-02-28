@@ -35,6 +35,8 @@ public class User {
     private String numeroTelephone;
     @Column(name = "est_actif")
     private Boolean actif;
+    @Column
+    private String url;
 
     private String token;
 
