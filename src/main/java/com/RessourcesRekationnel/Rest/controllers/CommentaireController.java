@@ -22,9 +22,15 @@ public class CommentaireController {
     @Autowired
     private RessourceDao ressourceDao;
 
+    // récupéré les commentaires
+
     @GetMapping("Ressource/{id}/Commentaires")
     public ResponseEntity<List<Commentaire>> getCommentaires(@PathVariable(name = "id") Integer id){
         Ressource res = ressourceDao.getById(id);
         return new ResponseEntity(commentaireDao.findByRessource(res), HttpStatus.OK);
     }
+
+    // ajouter un commentaire
+
+    // supprimer un commentaire
 }

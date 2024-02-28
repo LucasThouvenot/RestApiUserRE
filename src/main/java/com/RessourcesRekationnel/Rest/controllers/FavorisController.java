@@ -37,4 +37,8 @@ public class FavorisController {
         return new ResponseEntity<>(HttpStatus.NOT_FOUND);
     }
 
+    //ajoute un favoris
+
+    //supprimer un favoris
+
 }
