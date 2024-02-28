@@ -42,26 +42,28 @@ public class UserController {
 
     }
 
-//    @PostMapping("/login")
-//    ResponseEntity<String> login(@RequestBody User user) {
-//
-//        try {
-//            MyUserDetails userDetails = (MyUserDetails)authentication.authenticate(
-//                    new UsernamePasswordAuthenticationToken(
-//                            user.getPseudo(),
-//                            user.getPassword()
-//                    )
-//            ).getPrincipal();
-//
-//            String jwt = jwtService.getJwtFromUser(userDetails);
-//
-//            return new ResponseEntity<>(jwt,HttpStatus.OK);
-//
-//        } catch (Exception e){
-////            return new ResponseEntity<>(HttpStatus.FORBIDDEN);
-//            return new ResponseEntity(e, HttpStatus.FORBIDDEN);
-//        }
-//    }
+    @PostMapping("/login")
+    ResponseEntity<User> login(@RequestBody User user) {
+
+        try {
+            MyUserDetails userDetails = (MyUserDetails)authentication.authenticate(
+                    new UsernamePasswordAuthenticationToken(
+                            user.getPseudo(),
+                            user.getPassword()
+                    )
+            ).getPrincipal();
+
+            String jwt = jwtService.getJwtFromUser(userDetails);
+            user.setToken(jwt);
+            userDao.save(user);
+
+            return new ResponseEntity<>(user,HttpStatus.OK);
+
+        } catch (Exception e){
+//            return new ResponseEntity<>(HttpStatus.FORBIDDEN);
+            return new ResponseEntity(e, HttpStatus.FORBIDDEN);
+        }
+    }
 
     @GetMapping("/users")
     public ResponseEntity<List<User>> getUsers(){

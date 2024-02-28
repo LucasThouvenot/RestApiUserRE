@@ -24,26 +24,26 @@ public class LoginController {
     @Autowired
     private JwtService jwtService;
 
-    @PostMapping("/login")
-    public ResponseEntity<Map<String, String>> login(@RequestBody User user) {
-        try {
-            MyUserDetails userDetails = (MyUserDetails) authentication.authenticate(
-                    new UsernamePasswordAuthenticationToken(
-                            user.getPseudo(),
-                            user.getPassword()
-                    )
-            ).getPrincipal();
-
-            String jwt = jwtService.getJwtFromUser(userDetails);
-
-            Map<String, String> response = new HashMap<>();
-            response.put("token", jwt);
-            response.put("status", "success");
-
-            return ResponseEntity.ok(response);
-        } catch (Exception e) {
-            // Gérer les erreurs d'authentification
-            return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
-        }
-    }
+//    @PostMapping("/login")
+//    public ResponseEntity<Map<String, String>> login(@RequestBody User user) {
+//        try {
+//            MyUserDetails userDetails = (MyUserDetails) authentication.authenticate(
+//                    new UsernamePasswordAuthenticationToken(
+//                            user.getPseudo(),
+//                            user.getPassword()
+//                    )
+//            ).getPrincipal();
+//
+//            String jwt = jwtService.getJwtFromUser(userDetails);
+//
+//            Map<String, String> response = new HashMap<>();
+//            response.put("token", jwt);
+//            response.put("status", "success");
+//
+//            return ResponseEntity.ok(response);
+//        } catch (Exception e) {
+//            // Gérer les erreurs d'authentification
+//            return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
+//        }
+//    }
 }

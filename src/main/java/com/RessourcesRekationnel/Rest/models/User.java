@@ -36,6 +36,8 @@ public class User {
     @Column(name = "est_actif")
     private Boolean actif;
 
+    private String token;
+
     @OneToOne
     @JoinColumn(name = "favoris_id")
     private Favoris favoris;
