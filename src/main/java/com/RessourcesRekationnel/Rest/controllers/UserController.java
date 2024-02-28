@@ -33,12 +33,15 @@ public class UserController {
     private JwtService jwtService;
 
     @PostMapping("/sign-in")
-    ResponseEntity<User> signIn(@RequestBody User user) {
+    ResponseEntity<HttpStatus> signIn(@RequestBody User user) {
 
-        user.setPassword(encoder.encode(user.getPassword()));
-        userDao.save(user);
-
-        return new ResponseEntity<>(user, HttpStatus.CREATED);
+        if(userDao.findByPseudo(user.getPseudo()).isEmpty()){
+            user.setPassword(encoder.encode(user.getPassword()));
+            userDao.save(user);
+            return new ResponseEntity<>(HttpStatus.CREATED);
+        }else{
+            return new ResponseEntity<>(HttpStatus.CONFLICT);
+        }
 
     }
 
