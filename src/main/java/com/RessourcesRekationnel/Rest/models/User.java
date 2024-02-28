@@ -36,7 +36,7 @@ public class User {
     @Column(name = "est_actif")
     private Boolean actif;
     @Column
-    private String url;
+    private String imageUrl;
 
     private String token;
 
