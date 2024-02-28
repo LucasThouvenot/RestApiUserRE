@@ -82,12 +82,23 @@ public class UserController {
     }
 
     @PostMapping("users/{id}/profil-image")
-    public void uploadProfileImage(@PathVariable(name = "id") Integer id, @RequestParam("image") MultipartFile image) throws IOException {
-        User user = userDao.findById(id)
-                .orElseThrow(() -> new EntityNotFoundException("User not found with id: " + id));
+    public ResponseEntity<User> uploadProfileImage(@PathVariable(name = "id") Integer id, @RequestParam("image") MultipartFile image) throws IOException {
+        try{
+            Optional<User> oUser = userDao.findById(id);
+            if(oUser.isPresent()){
 
-        user.setImageUrl(image.getBytes());
-        userDao.save(user);
+                User user = oUser.get();
+                user.setImageUrl(image.getBytes());
+                userDao.save(user);
+                return new ResponseEntity<>(HttpStatus.OK);
+
+
+            }else{
+                return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+            }
+        }catch (Exception e){
+            return new ResponseEntity(e, HttpStatus.BAD_REQUEST);
+        }
     }
 
     @GetMapping("/users")
