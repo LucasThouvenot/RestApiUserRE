@@ -4,7 +4,7 @@ import jakarta.persistence.*;
 
 import java.sql.Date;
 
-@Entity
+@Entity(name = "commentaire")
 public class Commentaire {
 
     @Id
@@ -20,4 +20,8 @@ public class Commentaire {
 //    @ManyToOne
 //    @JoinColumn(name = "utilisateurId")
 //    private User user;
+
+    @ManyToOne
+    @JoinColumn(name = "ressource_id",referencedColumnName = "id")
+    private Ressource ressource;
 }
