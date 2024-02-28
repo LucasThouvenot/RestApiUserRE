@@ -38,6 +38,7 @@ public class LoginController {
 
             Map<String, String> response = new HashMap<>();
             response.put("token", jwt);
+            response.put("status", "success");
 
             return ResponseEntity.ok(response);
         } catch (Exception e) {
