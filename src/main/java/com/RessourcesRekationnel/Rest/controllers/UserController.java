@@ -49,18 +49,23 @@ public class UserController {
     ResponseEntity<User> login(@RequestBody User user) {
 
         try {
-            MyUserDetails userDetails = (MyUserDetails)authentication.authenticate(
-                    new UsernamePasswordAuthenticationToken(
-                            user.getPseudo(),
-                            user.getPassword()
-                    )
-            ).getPrincipal();
+            if(userDao.findByPseudo(user.getPseudo()).isPresent()){
+                MyUserDetails userDetails = (MyUserDetails)authentication.authenticate(
+                        new UsernamePasswordAuthenticationToken(
+                                user.getPseudo(),
+                                user.getPassword()
+                        )
+                ).getPrincipal();
 
-            String jwt = jwtService.getJwtFromUser(userDetails);
-            user.setToken(jwt);
-            userDao.save(user);
+                String jwt = jwtService.getJwtFromUser(userDetails);
+                user.setToken(jwt);
+                userDao.save(user);
 
-            return new ResponseEntity<>(user,HttpStatus.OK);
+                return new ResponseEntity<>(user,HttpStatus.OK);
+            }else{
+                return new ResponseEntity<>(user,HttpStatus.NOT_FOUND);
+            }
+
 
         } catch (Exception e){
 //            return new ResponseEntity<>(HttpStatus.FORBIDDEN);
