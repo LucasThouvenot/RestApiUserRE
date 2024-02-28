@@ -49,7 +49,8 @@ public class UserController {
     ResponseEntity<User> login(@RequestBody User user) {
 
         try {
-            if(userDao.findByPseudo(user.getPseudo()).isPresent()){
+            Optional<User> optionalUser = userDao.findByPseudo(user.getPseudo());
+            if(optionalUser.isPresent()){
                 MyUserDetails userDetails = (MyUserDetails)authentication.authenticate(
                         new UsernamePasswordAuthenticationToken(
                                 user.getPseudo(),
@@ -57,11 +58,14 @@ public class UserController {
                         )
                 ).getPrincipal();
 
-                String jwt = jwtService.getJwtFromUser(userDetails);
-                user.setToken(jwt);
-                userDao.save(user);
+                User currentUser = optionalUser.get();
 
-                return new ResponseEntity<>(user,HttpStatus.OK);
+                String jwt = jwtService.getJwtFromUser(userDetails);
+
+                currentUser.setToken(jwt);
+                userDao.save(currentUser);
+
+                return new ResponseEntity<>(currentUser,HttpStatus.OK);
             }else{
                 return new ResponseEntity<>(user,HttpStatus.NOT_FOUND);
             }

@@ -45,12 +45,12 @@ public class FavorisController {
     //ajoute un favoris
 
     @PostMapping("/users/{id}/favoris")
-    public ResponseEntity<List<Ressource>> addRessource(@PathVariable(name = "id") Integer idUser,@RequestBody Integer idRessource) {
+    public ResponseEntity<List<Ressource>> addRessource(@PathVariable(name = "id") Integer idUser,@RequestBody Ressource res) {
         Optional<User> userOptional = userDao.findById(idUser);
         if (userOptional.isPresent()) {
             User user = userOptional.get();
 
-            Optional<Ressource> ressourceOptional = ressourceDao.findById(idRessource);
+            Optional<Ressource> ressourceOptional = ressourceDao.findById(res.getId());
             if (ressourceOptional.isPresent()) {
                 Ressource ressource = ressourceOptional.get();
 
