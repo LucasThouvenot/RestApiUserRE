@@ -69,7 +69,7 @@ public class UserController {
     }
 
     @GetMapping("/users/{id}")
-    public ResponseEntity<Optional<User>> getUser(@RequestHeader Integer id){
+    public ResponseEntity<Optional<User>> getUser(@PathVariable(value = "id") Integer id){
         if(userDao.existsById(id)){
             return new ResponseEntity<>(userDao.findById(id),HttpStatus.OK);
         }

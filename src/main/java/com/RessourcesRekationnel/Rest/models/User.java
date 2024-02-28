@@ -37,7 +37,7 @@ public class User {
     private Boolean actif;
 
     @OneToOne
-    @JoinColumn(name="favorisId")
+    @JoinColumn(name = "favoris_id")
     private Favoris favoris;
 //
 //    @OneToMany
