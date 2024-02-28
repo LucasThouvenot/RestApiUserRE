@@ -30,13 +30,15 @@ public class User {
     @Column(name="prenom")
     private String prenom;
     @Column(name="adresse_mail")
-    private String adresseMail; // Changement de nom pour correspondre à la méthode findByAdresseMail
+    private String adresseMail;
     @Column(name="numero_telephone")
     private String numeroTelephone;
     @Column(name = "est_actif")
     private Boolean actif;
-    @Column
-    private String imageUrl;
+
+    @Lob
+    @Column(name="image_url")
+    private byte[] imageUrl;
 
     private String token;
 

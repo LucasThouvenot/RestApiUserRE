@@ -4,6 +4,7 @@ import com.RessourcesRekationnel.Rest.dao.UserDao;
 import com.RessourcesRekationnel.Rest.models.User;
 import com.RessourcesRekationnel.Rest.security.JwtService;
 import com.RessourcesRekationnel.Rest.security.MyUserDetails;
+import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -12,7 +13,10 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.header.Header;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
+import javax.swing.*;
+import java.io.IOException;
 import java.util.List;
 import java.util.Optional;
 
@@ -75,6 +79,15 @@ public class UserController {
 //            return new ResponseEntity<>(HttpStatus.FORBIDDEN);
             return new ResponseEntity(e, HttpStatus.FORBIDDEN);
         }
+    }
+
+    @PostMapping("users/{id}/profil-image")
+    public void uploadProfileImage(@PathVariable(name = "id") Integer id, @RequestParam("image") MultipartFile image) throws IOException {
+        User user = userDao.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException("User not found with id: " + id));
+
+        user.setImageUrl(image.getBytes());
+        userDao.save(user);
     }
 
     @GetMapping("/users")
