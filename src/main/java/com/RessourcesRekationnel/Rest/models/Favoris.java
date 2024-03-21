@@ -7,13 +7,15 @@ import lombok.Setter;
 import java.io.Serializable;
 import java.util.List;
 
-@Entity
+@Entity(name = "favoris")
 @Getter
 @Setter
 public class Favoris implements Serializable {
+
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column
+    @Column(name = "id")
     private Integer id;
 
     @Column
@@ -26,16 +28,6 @@ public class Favoris implements Serializable {
             inverseJoinColumns = @JoinColumn(name = "res_id")
     )
     private List<Ressource> ressources;
-
-//    @OneToOne
-
-    public Integer getId() {
-        return id;
-    }
-
-    public void setId(Integer id) {
-        this.id = id;
-    }
 
     public String getLabel() {
         return label;

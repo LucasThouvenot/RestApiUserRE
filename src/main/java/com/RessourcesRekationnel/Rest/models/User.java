@@ -7,18 +7,21 @@ import lombok.Setter;
 import org.hibernate.annotations.ColumnDefault;
 import org.springframework.boot.context.properties.bind.DefaultValue;
 
+import java.io.Serializable;
 import java.util.List;
 
 @Entity
 @Getter
 @Setter
 @Table(name="utilisateur")
-public class User {
+public class User implements Serializable {
+
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name="id")
+    @Column(name = "id")
     private Integer id;
+
     @Column(name="nom_utilisateur")
     private String pseudo;
     @Column(name="mot_de_passe")
