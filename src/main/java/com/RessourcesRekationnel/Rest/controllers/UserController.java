@@ -106,6 +106,9 @@ public class UserController {
         return new ResponseEntity<>(userDao.findAll(),HttpStatus.OK);
     }
 
+    @GetMapping("/users/{id}")
+    public ResponseEntity<User> getUser(@PathVariable(name = "id")Integer id){return new ResponseEntity<>(userDao.findById(id).orElse(null),HttpStatus.OK);}
+
 //    @GetMapping("/users/{username}")
 //    public ResponseEntity<Optional<User>> getUser(@RequestHeader String username){
 //    }
