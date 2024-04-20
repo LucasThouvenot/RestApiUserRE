@@ -18,6 +18,7 @@ import org.springframework.web.multipart.MultipartFile;
 import javax.swing.*;
 import java.io.IOException;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 
 @RestController
@@ -99,6 +100,19 @@ public class UserController {
         }catch (Exception e){
             return new ResponseEntity(e, HttpStatus.BAD_REQUEST);
         }
+    }
+
+    @PostMapping("/users/{id}")
+    public ResponseEntity<User> setUser(@PathVariable(name="id")Integer id,@RequestBody User sentUser){
+        User user = userDao.findById(id).orElse(null);
+        if(user != null){
+            if(Objects.equals(user.getId(), sentUser.getId())){
+                user = sentUser;
+                userDao.save(user);
+            }
+            return new ResponseEntity<>(userDao.findById(sentUser.getId()).orElse(null),HttpStatus.OK);
+        }
+        return new ResponseEntity<>(HttpStatus.NOT_FOUND);
     }
 
     @GetMapping("/users")
