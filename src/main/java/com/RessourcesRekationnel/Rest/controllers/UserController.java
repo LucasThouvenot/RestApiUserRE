@@ -107,7 +107,16 @@ public class UserController {
         User user = userDao.findById(id).orElse(null);
         if(user != null){
             if(Objects.equals(user.getId(), sentUser.getId())){
-                user = sentUser;
+                user.setPseudo(sentUser.getPseudo() == null ? user.getPseudo() : sentUser.getPseudo());
+                user.setPassword(sentUser.getPassword() == null ? user.getPassword() : sentUser.getPassword());
+                user.setAdmin(sentUser.isAdmin());
+                user.setNom(sentUser.getNom() == null ? user.getNom() : sentUser.getNom());
+                user.setPrenom(sentUser.getPrenom() == null ? user.getPrenom() : sentUser.getPrenom());
+                user.setAdresseMail(sentUser.getAdresseMail() == null ? user.getAdresseMail() : sentUser.getAdresseMail());
+                user.setNumeroTelephone(sentUser.getNumeroTelephone() == null ? user.getNumeroTelephone() : sentUser.getNumeroTelephone());
+                user.setActif(sentUser.getActif() == null ? user.getActif() : sentUser.getActif());
+                user.setImageUrl(sentUser.getImageUrl() == null ? user.getImageUrl() : sentUser.getImageUrl());
+
                 userDao.save(user);
             }
             return new ResponseEntity<>(userDao.findById(sentUser.getId()).orElse(null),HttpStatus.OK);
