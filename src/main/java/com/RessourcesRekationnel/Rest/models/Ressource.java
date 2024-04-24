@@ -24,20 +24,23 @@ public class Ressource implements Serializable {
     private String titre;
 
     @Column(name = "date_publication")
-    private Date datePubli;
+    private Date datePublication;
 
     @Column(name = "est_public")
-    private Boolean estPublic;
+    private Boolean restreinte;
 
     @Column(name = "exploite")
     private Boolean exploite;
 
     @Column(name = "content",length = 3000)
-    private String textContent;
+    private String contenu;
 
     @ManyToOne
     @JoinColumn(name = "user_id")
     private User user;
+
+    @OneToMany
+    private List<Image> image;
 
 
 }

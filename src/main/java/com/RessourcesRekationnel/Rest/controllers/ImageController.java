@@ -2,12 +2,10 @@ package com.RessourcesRekationnel.Rest.controllers;
 
 import com.RessourcesRekationnel.Rest.dao.ImageDao;
 import com.RessourcesRekationnel.Rest.dao.RessourceDao;
-import com.RessourcesRekationnel.Rest.models.Images;
+import com.RessourcesRekationnel.Rest.models.Image;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RestController;
@@ -24,7 +22,7 @@ public class ImageController {
     private ImageDao imageDao;
 
     @GetMapping("/ressources/{id}/images")
-    public ResponseEntity<List<Images>> getRessourceImages(@PathVariable(name = "id")Integer id){
+    public ResponseEntity<List<Image>> getRessourceImages(@PathVariable(name = "id")Integer id){
         if(ressourceDao.existsById(id)){
             return new ResponseEntity<>(imageDao.findByRessource(ressourceDao.findById(id).orElse(null)),HttpStatus.OK);
         }else{

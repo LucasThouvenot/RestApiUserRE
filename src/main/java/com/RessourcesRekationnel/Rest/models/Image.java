@@ -9,7 +9,7 @@ import java.io.Serializable;
 @Entity(name = "image")
 @Getter
 @Setter
-public class Images implements Serializable {
+public class Image implements Serializable {
 
 
     @Id
