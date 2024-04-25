@@ -108,8 +108,8 @@ public class UserController {
         if(user != null){
             if(Objects.equals(user.getId(), sentUser.getId())){
                 user.setPseudo(sentUser.getPseudo() == null ? user.getPseudo() : sentUser.getPseudo());
-                user.setPassword(sentUser.getPassword() == null ? user.getPassword() : sentUser.getPassword());
-                user.setAdmin(sentUser.getAdmin() == null? user.getAdmin() : sentUser.getAdmin());
+                user.setPassword(sentUser.getPassword() == null ? user.getPassword() : encoder.encode(sentUser.getPassword()));
+                user.setAdmin(sentUser.isAdmin() == user.isAdmin()? user.isAdmin() : sentUser.isAdmin());
                 user.setNom(sentUser.getNom() == null ? user.getNom() : sentUser.getNom());
                 user.setPrenom(sentUser.getPrenom() == null ? user.getPrenom() : sentUser.getPrenom());
                 user.setAdresseMail(sentUser.getAdresseMail() == null ? user.getAdresseMail() : sentUser.getAdresseMail());

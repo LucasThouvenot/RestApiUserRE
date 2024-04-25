@@ -27,7 +27,7 @@ public class User implements Serializable {
     @Column(name="mot_de_passe")
     private String password;
     @Column(name="est_admin")
-    private Boolean admin;
+    private boolean admin;
     @Column(name="nom")
     private String nom;
     @Column(name="prenom")
