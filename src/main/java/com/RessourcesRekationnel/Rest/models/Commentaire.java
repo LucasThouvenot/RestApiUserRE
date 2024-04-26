@@ -4,6 +4,8 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 import org.springframework.boot.availability.AvailabilityChangeEvent;
+import org.springframework.data.annotation.CreatedDate;
+import org.springframework.format.annotation.DateTimeFormat;
 
 import java.io.Serializable;
 import java.sql.Date;
@@ -21,6 +23,9 @@ public class Commentaire implements Serializable {
     private Integer id;
 
     @Column(name="date_publication")
+    @DateTimeFormat(pattern = "dd/MM/yyyy")
+    @CreatedDate
+    @Temporal(TemporalType.DATE)
     private Date datePubli;
 
     @Column(name="contenu")

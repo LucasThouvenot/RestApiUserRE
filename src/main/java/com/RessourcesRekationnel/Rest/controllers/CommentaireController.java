@@ -2,6 +2,7 @@ package com.RessourcesRekationnel.Rest.controllers;
 
 import com.RessourcesRekationnel.Rest.dao.CommentaireDao;
 import com.RessourcesRekationnel.Rest.dao.RessourceDao;
+import com.RessourcesRekationnel.Rest.dao.UserDao;
 import com.RessourcesRekationnel.Rest.models.Commentaire;
 import com.RessourcesRekationnel.Rest.models.Ressource;
 import com.RessourcesRekationnel.Rest.models.User;
@@ -22,6 +23,9 @@ public class CommentaireController {
     @Autowired
     private RessourceDao ressourceDao;
 
+    @Autowired
+    private UserDao userDao;
+
     // Récupérer les commentaires d'une ressource
 
     @GetMapping("/ressources/{id}/commentaires")
@@ -31,6 +35,17 @@ public class CommentaireController {
             List<Commentaire> commentaires = commentaireDao.findByRessource(ressource);
             return ResponseEntity.ok(commentaires);
         } else {
+            return ResponseEntity.notFound().build();
+        }
+    }
+
+    @GetMapping("/users/{id}/commentaires")
+    public ResponseEntity<List<Commentaire>> getUsersCommenaires(@PathVariable(name = "id")Integer id){
+        User user = userDao.findById(id).orElse(null);
+        if(user!=null){
+            List<Commentaire> commentaires = commentaireDao.findByUser(user);
+            return ResponseEntity.ok(commentaires);
+        }else{
             return ResponseEntity.notFound().build();
         }
     }
