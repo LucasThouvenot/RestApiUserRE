@@ -28,81 +28,88 @@ public class FavorisController {
     @Autowired
     private RessourceDao ressourceDao;
 
+    // Récupérer les favoris d'un utilisateur
     @GetMapping("/users/{id}/favoris")
     public ResponseEntity<List<Ressource>> getFavoris(@PathVariable(name = "id") Integer id){
-
-        Optional<User> userOptional = userDao.findById(id);
-        if(userOptional.isPresent()){
-            User user = userOptional.get();
-            if (user.getFavoris() != null) {
-                return new ResponseEntity<>(user.getFavoris().getRessources(), HttpStatus.OK);
-            } else {
-                return new ResponseEntity<>(HttpStatus.NO_CONTENT); // Or any other appropriate status code
+        try {
+            Optional<User> userOptional = userDao.findById(id);
+            if(userOptional.isPresent()){
+                User user = userOptional.get();
+                if (user.getFavoris() != null) {
+                    return new ResponseEntity<>(user.getFavoris().getRessources(), HttpStatus.OK);
+                } else {
+                    return new ResponseEntity<>(HttpStatus.NO_CONTENT); // Pas de favoris trouvés
+                }
             }
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND); // Utilisateur non trouvé
+        } catch (Exception e) {
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR); // Erreur interne du serveur
         }
-        return new ResponseEntity<>(HttpStatus.NOT_FOUND);
     }
 
-    //ajoute un favoris
-
+    // Ajouter une ressource aux favoris d'un utilisateur
     @PostMapping("/users/{id}/favoris")
     public ResponseEntity<List<Ressource>> addRessource(@PathVariable(name = "id") Integer idUser,@RequestBody Ressource res) {
-        Optional<User> userOptional = userDao.findById(idUser);
-        if (userOptional.isPresent()) {
-            User user = userOptional.get();
+        try {
+            Optional<User> userOptional = userDao.findById(idUser);
+            if (userOptional.isPresent()) {
+                User user = userOptional.get();
 
-            Optional<Ressource> ressourceOptional = ressourceDao.findById(res.getId());
-            if (ressourceOptional.isPresent()) {
-                Ressource ressource = ressourceOptional.get();
+                Optional<Ressource> ressourceOptional = ressourceDao.findById(res.getId());
+                if (ressourceOptional.isPresent()) {
+                    Ressource ressource = ressourceOptional.get();
 
-                Favoris favoris = user.getFavoris();
-                if (favoris == null) {
-                    favoris = new Favoris();
-                    favoris.setRessources(new ArrayList<>());
-                    favoris.addRessources(ressource);
-                    favorisDao.save(favoris);
-                    user.setFavoris(favoris);
-                    userDao.save(user);
-                } else {
-                    favoris.getRessources().add(ressource);
-                    favorisDao.save(favoris);
+                    Favoris favoris = user.getFavoris();
+                    if (favoris == null) {
+                        favoris = new Favoris();
+                        favoris.setRessources(new ArrayList<>());
+                        favoris.addRessources(ressource);
+                        favorisDao.save(favoris);
+                        user.setFavoris(favoris);
+                        userDao.save(user);
+                    } else {
+                        favoris.getRessources().add(ressource);
+                        favorisDao.save(favoris);
+                    }
+
+                    return new ResponseEntity<>(favoris.getRessources(), HttpStatus.OK); // Renvoyer les favoris mis à jour
                 }
-
-                return new ResponseEntity<>(favoris.getRessources(), HttpStatus.OK);
-
-
+                return new ResponseEntity<>(HttpStatus.NOT_FOUND); // Ressource non trouvée
             }
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND); // Utilisateur non trouvé
+        } catch (Exception e) {
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR); // Erreur interne du serveur
         }
-        return new ResponseEntity<>(HttpStatus.NOT_FOUND);
     }
 
-    //supprimer un favoris
+    // Supprimer une ressource des favoris d'un utilisateur
     @DeleteMapping("users/{id}/favoris")
     public ResponseEntity<List<Ressource>> removeRessource(@PathVariable(name = "id") Integer idUser,@RequestBody Ressource res) {
-        Optional<User> userOptional = userDao.findById(idUser);
-        if (userOptional.isPresent()) {
-            User user = userOptional.get();
+        try {
+            Optional<User> userOptional = userDao.findById(idUser);
+            if (userOptional.isPresent()) {
+                User user = userOptional.get();
 
-            Optional<Ressource> ressourceOptional = ressourceDao.findById(res.getId());
-            if (ressourceOptional.isPresent()) {
-                Ressource ressource = ressourceOptional.get();
+                Optional<Ressource> ressourceOptional = ressourceDao.findById(res.getId());
+                if (ressourceOptional.isPresent()) {
+                    Ressource ressource = ressourceOptional.get();
 
-                Favoris favoris = user.getFavoris();
-                if (favoris == null) {
-                    return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-                } else {
-                    favoris.delRessource(ressource);
-                    favorisDao.save(favoris);
+                    Favoris favoris = user.getFavoris();
+                    if (favoris == null) {
+                        return new ResponseEntity<>(HttpStatus.NOT_FOUND); // Pas de favoris pour cet utilisateur
+                    } else {
+                        favoris.delRessource(ressource);
+                        favorisDao.save(favoris);
+                    }
+
+                    return new ResponseEntity<>(favoris.getRessources(), HttpStatus.OK); // Renvoyer les favoris mis à jour
                 }
-
-                return new ResponseEntity<>(favoris.getRessources(), HttpStatus.OK);
-
-
+                return new ResponseEntity<>(HttpStatus.NOT_FOUND); // Ressource non trouvée
             }
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND); // Utilisateur non trouvé
+        } catch (Exception e) {
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR); // Erreur interne du serveur
         }
-        return new ResponseEntity<>(HttpStatus.NOT_FOUND);
     }
 
 }

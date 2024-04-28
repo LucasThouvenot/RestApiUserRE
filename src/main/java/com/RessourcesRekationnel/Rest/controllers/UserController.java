@@ -132,13 +132,36 @@ public class UserController {
         }
     }
 
+    // Récupérer tous les utilisateurs
     @GetMapping("/users")
-    public ResponseEntity<List<User>> getUsers(){
-        return new ResponseEntity<>(userDao.findAll(),HttpStatus.OK);
+    public ResponseEntity<List<User>> getUsers() {
+        try {
+            List<User> users = userDao.findAll();
+            if (!users.isEmpty()) {
+                return new ResponseEntity<>(users, HttpStatus.OK);
+            } else {
+                return new ResponseEntity<>(HttpStatus.NO_CONTENT); // Aucun utilisateur trouvé
+            }
+        } catch (Exception e) {
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR); // Erreur interne du serveur
+        }
     }
 
+    // Récupérer un utilisateur par son ID
     @GetMapping("/users/{id}")
-    public ResponseEntity<User> getUser(@PathVariable(name = "id")Integer id){return new ResponseEntity<>(userDao.findById(id).orElse(null),HttpStatus.OK);}
+    public ResponseEntity<User> getUser(@PathVariable(name = "id") Integer id) {
+        try {
+            Optional<User> userOptional = userDao.findById(id);
+            if (userOptional.isPresent()) {
+                User user = userOptional.get();
+                return new ResponseEntity<>(user, HttpStatus.OK);
+            } else {
+                return new ResponseEntity<>(HttpStatus.NOT_FOUND); // Utilisateur non trouvé
+            }
+        } catch (Exception e) {
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR); // Erreur interne du serveur
+        }
+    }
 
 //    @GetMapping("/users/{username}")
 //    public ResponseEntity<Optional<User>> getUser(@RequestHeader String username){
