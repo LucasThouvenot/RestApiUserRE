@@ -3,14 +3,13 @@ package com.RessourcesRekationnel.Rest.controllers;
 import com.RessourcesRekationnel.Rest.dao.CommentaireDao;
 import com.RessourcesRekationnel.Rest.dao.RessourceDao;
 import com.RessourcesRekationnel.Rest.dao.UserDao;
-import com.RessourcesRekationnel.Rest.models.Commentaire;
-import com.RessourcesRekationnel.Rest.models.Ressource;
-import com.RessourcesRekationnel.Rest.models.User;
+import com.RessourcesRekationnel.Rest.models.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -28,12 +27,39 @@ public class CommentaireController {
 
     // Récupérer les commentaires d'une ressource
     @GetMapping("/ressources/{id}/commentaires")
-    public ResponseEntity<List<Commentaire>> getCommentaires(@PathVariable(name = "id") Integer id) {
+    public ResponseEntity<List<CommentaireDTO>> getCommentaires(@PathVariable(name = "id") Integer id) {
         try {
             Ressource ressource = ressourceDao.findById(id).orElse(null);
             if (ressource != null) {
                 List<Commentaire> commentaires = commentaireDao.findByRessource(ressource);
-                return ResponseEntity.ok(commentaires);
+                List<CommentaireDTO> response = new ArrayList<>();
+
+                for (Commentaire commentaire : commentaires) {
+                    CommentaireDTO commentResponse = new CommentaireDTO();
+                    commentResponse.setId(commentaire.getId());
+                    commentResponse.setDatePubli(commentaire.getDatePubli());
+                    commentResponse.setContent(commentaire.getContent());
+
+                    RessourceDTO ressourceDTO = new RessourceDTO();
+                    ressourceDTO.setId(ressource.getId());
+                    ressourceDTO.setTitre(ressource.getTitre());
+                    ressourceDTO.setRestreinte(ressource.getRestreinte());
+
+                    UserDTO userDTORessource = new UserDTO();
+                    userDTORessource.setPseudo(ressource.getUser().getPseudo());
+                    userDTORessource.setImage(ressource.getUser().getImageUrl());
+                    ressourceDTO.setUser(userDTORessource);
+
+                    UserDTO userDTOCommentaire = new UserDTO();
+                    userDTOCommentaire.setPseudo(commentaire.getUser().getPseudo());
+                    userDTOCommentaire.setImage(commentaire.getUser().getImageUrl());
+                    commentResponse.setUser(userDTOCommentaire);
+
+                    commentResponse.setRessource(ressourceDTO);
+
+                    response.add(commentResponse);
+                }
+                return ResponseEntity.ok(response);
             } else {
                 return ResponseEntity.notFound().build();
             }
@@ -44,12 +70,40 @@ public class CommentaireController {
 
     // Récupérer les commentaires d'un utilisateur
     @GetMapping("/users/{id}/commentaires")
-    public ResponseEntity<List<Commentaire>> getUsersCommenaires(@PathVariable(name = "id") Integer id) {
+    public ResponseEntity<List<CommentaireDTO>> getUsersCommenaires(@PathVariable(name = "id") Integer id) {
         try {
             User user = userDao.findById(id).orElse(null);
             if (user != null) {
                 List<Commentaire> commentaires = commentaireDao.findByUser(user);
-                return ResponseEntity.ok(commentaires);
+                List<CommentaireDTO> response = new ArrayList<>();
+
+                for (Commentaire commentaire : commentaires) {
+                    CommentaireDTO commentResponse = new CommentaireDTO();
+                    commentResponse.setId(commentaire.getId());
+                    commentResponse.setDatePubli(commentaire.getDatePubli());
+                    commentResponse.setContent(commentaire.getContent());
+
+                    RessourceDTO ressourceDTO = new RessourceDTO();
+                    ressourceDTO.setId(commentaire.getRessource().getId());
+                    ressourceDTO.setTitre(commentaire.getRessource().getTitre());
+                    ressourceDTO.setRestreinte(commentaire.getRessource().getRestreinte());
+
+                    UserDTO userDTORessource = new UserDTO();
+                    userDTORessource.setPseudo(commentaire.getRessource().getUser().getPseudo());
+                    userDTORessource.setImage(commentaire.getRessource().getUser().getImageUrl());
+                    ressourceDTO.setUser(userDTORessource);
+
+                    UserDTO userDTOCommentaire = new UserDTO();
+                    userDTOCommentaire.setPseudo(commentaire.getUser().getPseudo());
+                    userDTOCommentaire.setImage(commentaire.getUser().getImageUrl());
+                    commentResponse.setUser(userDTOCommentaire);
+
+                    commentResponse.setRessource(ressourceDTO);
+
+                    response.add(commentResponse);
+                }
+
+                return ResponseEntity.ok(response);
             } else {
                 return ResponseEntity.notFound().build();
             }
