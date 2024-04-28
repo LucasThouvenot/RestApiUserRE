@@ -84,7 +84,7 @@ public class CommentaireController {
             Optional<Commentaire> commentaireOptional = commentaireDao.findById(comId);
             if (commentaireOptional.isPresent()) {
                 commentaireDao.deleteById(comId);
-                return ResponseEntity.ok("Commentaire supprimé avec succès");
+                return ResponseEntity.status(HttpStatus.OK).build();
             } else {
                 return ResponseEntity.notFound().build();
             }
