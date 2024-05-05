@@ -4,7 +4,7 @@ INSERT INTO favoris(label) VALUES ('un favori');
 -- Insertion d'un utilisateur avec un favori
 INSERT INTO utilisateur(nom_utilisateur, mot_de_passe, est_admin, nom, prenom, adresse_mail, numero_telephone, est_actif, favoris_id)
 VALUES ('admin', '$2y$10$G8wbzQocBNtLJ/n3yrq/Cu6DyWhhuZRaAI.mKbxoSqWM6ejbnOJ/i', true, 'admin', 'admin', 'admin@RessourcesRelationnel.com', '0102030405', true, 1),
-       ('Lucas', '$2y$10$GJTJvxN.RQliiptIDMbRpuB94PSB6Sav.odK7cbob7b965VViIo.y', false, 'Thouvenot', 'Lucas', 'thouvenot-lucas@outlook.fr', '0102030405', true, NULL);
+       ('Lucas', '$2y$10$GJTJvxN.RQliiptIDMbRpuB94PSB6Sav.odK7cbob7b965VViIo.y', false, 'Thouvenot', 'Lucas', 'thouvenot-lucas@outlook.fr', '0809080705', true, NULL);
 
 -- Insertion d'une ressource
 INSERT INTO ressource (titre,date_publication, est_public, exploite, content,user_id) VALUES

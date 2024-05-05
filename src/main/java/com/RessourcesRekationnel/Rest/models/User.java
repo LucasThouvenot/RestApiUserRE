@@ -22,7 +22,7 @@ public class User implements Serializable {
     @Column(name = "id")
     private Integer id;
 
-    @Column(name="nom_utilisateur")
+    @Column(name="nom_utilisateur",unique = true)
     private String pseudo;
     @Column(name="mot_de_passe")
     private String password;
@@ -32,9 +32,9 @@ public class User implements Serializable {
     private String nom;
     @Column(name="prenom")
     private String prenom;
-    @Column(name="adresse_mail")
+    @Column(name="adresse_mail",unique = true)
     private String adresseMail;
-    @Column(name="numero_telephone")
+    @Column(name="numero_telephone",unique = true)
     private String numeroTelephone;
     @Column(name = "est_actif")
     private Boolean actif;
