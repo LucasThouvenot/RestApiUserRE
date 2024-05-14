@@ -83,14 +83,14 @@ public class FavorisController {
     }
 
     // Supprimer une ressource des favoris d'un utilisateur
-    @DeleteMapping("users/{id}/favoris")
-    public ResponseEntity<List<Ressource>> removeRessource(@PathVariable(name = "id") Integer idUser,@RequestBody Ressource res) {
+    @DeleteMapping("users/{id}/favoris/{idRes}")
+    public ResponseEntity<List<Ressource>> removeRessource(@PathVariable(name = "id") Integer idUser,@PathVariable(name="idRes")Integer idRes) {
         try {
             Optional<User> userOptional = userDao.findById(idUser);
             if (userOptional.isPresent()) {
                 User user = userOptional.get();
 
-                Optional<Ressource> ressourceOptional = ressourceDao.findById(res.getId());
+                Optional<Ressource> ressourceOptional = ressourceDao.findById(idRes);
                 if (ressourceOptional.isPresent()) {
                     Ressource ressource = ressourceOptional.get();
 
