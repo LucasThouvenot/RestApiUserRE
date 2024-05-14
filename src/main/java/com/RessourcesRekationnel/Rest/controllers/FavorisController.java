@@ -49,13 +49,13 @@ public class FavorisController {
 
     // Ajouter une ressource aux favoris d'un utilisateur
     @PostMapping("/users/{id}/favoris")
-    public ResponseEntity<List<Ressource>> addRessource(@PathVariable(name = "id") Integer idUser,@RequestBody Ressource res) {
+    public ResponseEntity<List<Ressource>> addRessource(@PathVariable(name = "id") Integer idUser,@RequestParam(name="idRes") Integer idRes) {
         try {
             Optional<User> userOptional = userDao.findById(idUser);
             if (userOptional.isPresent()) {
                 User user = userOptional.get();
 
-                Optional<Ressource> ressourceOptional = ressourceDao.findById(res.getId());
+                Optional<Ressource> ressourceOptional = ressourceDao.findById(idRes);
                 if (ressourceOptional.isPresent()) {
                     Ressource ressource = ressourceOptional.get();
 
