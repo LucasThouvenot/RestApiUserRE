@@ -9,6 +9,7 @@ import org.springframework.format.annotation.DateTimeFormat;
 
 import java.io.Serializable;
 import java.sql.Date;
+import java.text.SimpleDateFormat;
 
 @Entity(name = "commentaire")
 @Getter
@@ -49,6 +50,12 @@ public class Commentaire implements Serializable {
 
     public void setRessource(Ressource ressource) {
         this.ressource = ressource;
+    }
+
+    @PrePersist
+    public void onPrePersist() {
+        SimpleDateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy");
+        datePubli = Date.valueOf(dateFormat.format(new java.util.Date()));
     }
 
 
