@@ -116,13 +116,22 @@ public class CommentaireController {
     @PostMapping("/ressources/{id}/commentaires")
     public ResponseEntity<Commentaire> addCommentaire(
             @PathVariable(name = "id") Integer id,
-            @RequestBody Commentaire commentaire) {
+            @RequestParam(name="idUser")Integer idUser,
+            @RequestParam(name="contenu")String contenu) {
         try {
             Ressource ressource = ressourceDao.findById(id).orElse(null);
             if (ressource != null) {
-                commentaire.setRessource(ressource);
-                Commentaire savedCommentaire = commentaireDao.save(commentaire);
-                return ResponseEntity.status(HttpStatus.CREATED).body(savedCommentaire);
+                User user = userDao.findById(idUser).orElse(null);
+                if(user != null){
+                    Commentaire commentaire = new Commentaire();
+                    commentaire.setUser(user);
+                    commentaire.setRessource(ressource);
+                    commentaire.setContent(contenu);
+                    Commentaire savedCommentaire = commentaireDao.save(commentaire);
+                    return ResponseEntity.status(HttpStatus.CREATED).body(savedCommentaire);
+                }else{
+                    return ResponseEntity.notFound().build();
+                }
             } else {
                 return ResponseEntity.notFound().build();
             }
