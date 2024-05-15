@@ -163,6 +163,21 @@ public class UserController {
         }
     }
 
+    @GetMapping("/users/{id}/isLogin")
+    public ResponseEntity<Boolean> isUserLogin(@PathVariable(name = "id") Integer id){
+        try {
+            User user = userDao.findById(id).orElse(null);
+            if(user != null && user.getToken() != null){
+                return new ResponseEntity<>(true,HttpStatus.OK);
+            }else{
+                return new ResponseEntity<>(false,HttpStatus.OK);
+            }
+        }catch (Exception e){
+            System.out.println(e);
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
 //    @GetMapping("/users/{username}")
 //    public ResponseEntity<Optional<User>> getUser(@RequestHeader String username){
 //    }
