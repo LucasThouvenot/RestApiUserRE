@@ -1,34 +1,27 @@
+FROM maven:3.8.5 as maven
+LABEL COMPANY="awadev"
+LABEL MAINTAINER="support@awadev.com"
+LABEL APPLICATION="RestApiUserRE"
 
-# Étape de construction avec Maven et OpenJDK 21
-FROM maven:3-openjdk-17 as build
+WORKDIR /usr/src/app
+COPY . /usr/src/app
+RUN mvn package
 
-# Arrêter l'exécution en tant que root
-RUN useradd -m myuser
-WORKDIR /usr/src/app/
-RUN chown myuser:myuser /usr/src/app/
-USER myuser
-
-# Copier pom.xml et précharger les dépendances pour Maven
-COPY --chown=myuser pom.xml ./
-RUN mvn dependency:go-offline -Pproduction
-
-# Copier les fichiers nécessaires du projet
-COPY --chown=myuser:myuser src src
-
-# Construire le package de production
-RUN mvn clean package -DskipTests -Pproduction
-
-# Étape de déploiement avec Tomcat
 FROM tomcat:10-jdk21
+ARG TOMCAT_FILE_PATH=/docker
 
-# Copier le fichier WAR construit vers Tomcat
-COPY --from=build /usr/src/app/target/*.war /usr/local/tomcat/webapps/ROOT.war
+#Data & Config - Persistent Mount Point
+ENV APP_DATA_FOLDER=/var/lib/SampleApp
+ENV SAMPLE_APP_CONFIG=${APP_DATA_FOLDER}/config/
 
-# Exposer le port 8080
-EXPOSE 8080
 
-# Définir le répertoire de travail
-WORKDIR /usr/app/
+#Move over the War file from previous build step
+WORKDIR /usr/local/tomcat/webapps/
+COPY --from=maven /usr/src/app/target/RestApiUserRE.war /usr/local/tomcat/webapps/api.war
 
-# Définir le point d'entrée
+COPY ${TOMCAT_FILE_PATH}/* ${CATALINA_HOME}/conf/
+
+WORKDIR $APP_DATA_FOLDER
+
+EXPOSE 8082
 ENTRYPOINT ["catalina.sh", "run"]
