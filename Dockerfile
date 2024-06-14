@@ -5,21 +5,21 @@ LABEL APPLICATION="RestApiUserRE"
 
 WORKDIR /usr/src/app
 COPY . /usr/src/app
-RUN mvn package
+RUN mvn clean package -DskipTests
+
 
 FROM tomcat:10-jdk21
 ARG TOMCAT_FILE_PATH=/docker
 
-#Data & Config - Persistent Mount Point
+# Data & Config - Persistent Mount Point
 ENV APP_DATA_FOLDER=/var/lib/SampleApp
 ENV SAMPLE_APP_CONFIG=${APP_DATA_FOLDER}/config/
 
-
-#Move over the War file from previous build step
+# Move over the War file from previous build step
 WORKDIR /usr/local/tomcat/webapps/
-COPY --from=maven /usr/src/app/target/RestApiUserRE.war /usr/local/tomcat/webapps/api.war
+COPY --from=maven /usr/src/app/target/*.war /usr/local/tomcat/webapps/RestApiUserRE.war
 
-COPY ${TOMCAT_FILE_PATH}/* ${CATALINA_HOME}/conf/
+#COPY ${TOMCAT_FILE_PATH}/* ${CATALINA_HOME}/conf/
 
 WORKDIR $APP_DATA_FOLDER
 

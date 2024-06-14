@@ -11,10 +11,13 @@
 	<groupId>edu.fbansept</groupId>
 	<artifactId>RestApiUserRE</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
+	<packaging>war</packaging>
 	<name>demo</name>
 	<description>Demo project for Spring Boot</description>
 	<properties>
 		<java.version>17</java.version>
+		<maven.compiler.source>1.8</maven.compiler.source>
+		<maven.compiler.target>1.8</maven.compiler.target>
 	</properties>
 	<dependencies>
 		<dependency>
@@ -88,18 +91,52 @@
 	<build>
 		<plugins>
 			<plugin>
-				<groupId>org.springframework.boot</groupId>
-				<artifactId>spring-boot-maven-plugin</artifactId>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-compiler-plugin</artifactId>
+				<version>3.8.1</version>
 				<configuration>
-					<excludes>
-						<exclude>
-							<groupId>org.projectlombok</groupId>
-							<artifactId>lombok</artifactId>
-						</exclude>
-					</excludes>
+					<source>${maven.compiler.source}</source>
+					<target>${maven.compiler.target}</target>
+				</configuration>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-war-plugin</artifactId>
+				<version>3.3.1</version>
+				<configuration>
+					<failOnMissingWebXml>false</failOnMissingWebXml>
+				</configuration>
+			</plugin>
+			<plugin>
+				<groupId>io.fabric8</groupId>
+				<artifactId>docker-maven-plugin</artifactId>
+				<version>0.36.0</version>
+				<configuration>
+					<images>
+						<image>
+							<name>touvtouv/RestApiUserRe:${project.version}</name>
+							<build>
+								<dockerFile>Dockerfile</dockerFile>
+								<contextDir>${project.basedir}</contextDir>
+								<resources>
+									<resource>
+										<targetPath>/</targetPath>
+										<directory>${project.build.directory}</directory>
+										<includes>
+											<include>*.war</include>
+										</includes>
+									</resource>
+								</resources>
+							</build>
+							<run>
+								<ports>
+									<port>8082:8080</port>
+								</ports>
+							</run>
+						</image>
+					</images>
 				</configuration>
 			</plugin>
 		</plugins>
 	</build>
-
 </project>
