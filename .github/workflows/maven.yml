@@ -33,15 +33,16 @@ jobs:
         run: echo "${{ secrets.DOCKER_HUB_PASSWORD }}" | docker login -u "${{ secrets.DOCKER_HUB_USERNAME }}" --password-stdin
 
       - name: Push Docker image
-        run: docker push touvtouv/rest_api_user_re:latest
+        run: docker push my-dockerhub-username/my-java-app:latest
+
+      - name: Install sshpass
+        run: sudo apt-get install -y sshpass
 
       - name: Deploy to Docker Server
         env:
-          DOCKER_HOST: ${{ secrets.DOCKER_HOST }}
-          DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
-          DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
+          SSH_CONNECTION_STRING: ${{ secrets.SSH_CONNECTION_STRING }}
+          SSH_PASSWORD: ${{ secrets.SSH_PASSWORD }}
         run: |
-          echo "${{ secrets.DOCKER_PASSWORD }}" | docker login ${{ secrets.DOCKER_HOST }} -u "${{ secrets.DOCKER_USERNAME }}" --password-stdin
-          docker-compose down
-          docker-compose pull apiuser
-          docker-compose up -d
+          sshpass -p "${{ secrets.SSH_PASSWORD }}" ssh -o StrictHostKeyChecking=no "${{ secrets.SSH_CONNECTION_STRING }}" "docker-compose -f /path/to/your/docker-compose.yml down"
+          sshpass -p "${{ secrets.SSH_PASSWORD }}" ssh -o StrictHostKeyChecking=no "${{ secrets.SSH_CONNECTION_STRING }}" "docker-compose -f /path/to/your/docker-compose.yml pull apiuser"
+          sshpass -p "${{ secrets.SSH_PASSWORD }}" ssh -o StrictHostKeyChecking=no "${{ secrets.SSH_CONNECTION_STRING }}" "docker-compose -f /path/to/your/docker-compose.yml up -d"
