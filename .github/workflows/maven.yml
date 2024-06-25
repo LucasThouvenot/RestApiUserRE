@@ -24,7 +24,7 @@ jobs:
         run: mvn -B package -DskipTests --file pom.xml
 
       - name: Build Docker image
-        run: docker build . -t my-dockerhub-username/my-java-app:latest
+        run: docker build . -t touvtouv/api_rest_user_re:latest
 
       - name: Log in to Docker Hub
         env:
