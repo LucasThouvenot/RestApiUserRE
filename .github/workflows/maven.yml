@@ -24,7 +24,7 @@ jobs:
         run: mvn -B package -DskipTests --file pom.xml
 
       - name: Build Docker image
-        run: docker build . -t touvtouv/api_rest_user_re:latest
+        run: docker build . -t ${{ secrets.DOCKER_HUB_USERNAME }}/api_rest_user_re:latest
 
       - name: Log in to Docker Hub
         env:
@@ -33,16 +33,23 @@ jobs:
         run: echo "${{ secrets.DOCKER_HUB_PASSWORD }}" | docker login -u "${{ secrets.DOCKER_HUB_USERNAME }}" --password-stdin
 
       - name: Push Docker image
-        run: docker push touvtouv/api_rest_user_re:latest
+        run: docker push ${{ secrets.DOCKER_HUB_USERNAME }}/api_rest_user_re:latest
 
       - name: Install sshpass
         run: sudo apt-get install -y sshpass
+
+      - name: Copy docker-compose.yml to server
+        env:
+          SSH_CONNECTION_STRING: ${{ secrets.SSH_CONNECTION_STRING }}
+          SSH_PASSWORD: ${{ secrets.SSH_PASSWORD }}
+        run: |
+          sshpass -p "${{ secrets.SSH_PASSWORD }}" scp -o StrictHostKeyChecking=no docker-compose.yml "${{ secrets.SSH_CONNECTION_STRING }}:/home/app/api_rest_user_re/docker-compose.yml"
 
       - name: Deploy to Docker Server
         env:
           SSH_CONNECTION_STRING: ${{ secrets.SSH_CONNECTION_STRING }}
           SSH_PASSWORD: ${{ secrets.SSH_PASSWORD }}
         run: |
-          sshpass -p "${{ secrets.SSH_PASSWORD }}" ssh -o StrictHostKeyChecking=no "${{ secrets.SSH_CONNECTION_STRING }}" "docker-compose -f /path/to/your/docker-compose.yml down"
-          sshpass -p "${{ secrets.SSH_PASSWORD }}" ssh -o StrictHostKeyChecking=no "${{ secrets.SSH_CONNECTION_STRING }}" "docker-compose -f /path/to/your/docker-compose.yml pull apiuser"
-          sshpass -p "${{ secrets.SSH_PASSWORD }}" ssh -o StrictHostKeyChecking=no "${{ secrets.SSH_CONNECTION_STRING }}" "docker-compose -f /path/to/your/docker-compose.yml up -d"
+          sshpass -p "${{ secrets.SSH_PASSWORD }}" ssh -o StrictHostKeyChecking=no "${{ secrets.SSH_CONNECTION_STRING }}" "docker-compose -f /home/app/api_rest_user_re/docker-compose.yml down"
+          sshpass -p "${{ secrets.SSH_PASSWORD }}" ssh -o StrictHostKeyChecking=no "${{ secrets.SSH_CONNECTION_STRING }}" "docker-compose -f /home/app/api_rest_user_re/docker-compose.yml pull apiuser"
+          sshpass -p "${{ secrets.SSH_PASSWORD }}" ssh -o StrictHostKeyChecking=no "${{ secrets.SSH_CONNECTION_STRING }}" "docker-compose -f /home/app/api_rest_user_re/docker-compose.yml up -d"
