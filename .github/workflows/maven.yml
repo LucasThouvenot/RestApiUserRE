@@ -43,16 +43,16 @@ jobs:
         with:
           ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
 
-      - name: Copy docker-compose.yml to server
+      - name: Copy compose.yml to server
         env:
           SSH_CONNECTION_STRING: ${{ secrets.SSH_CONNECTION_STRING }}
         run: |
-          scp -o StrictHostKeyChecking=no docker-compose.yml "${{ secrets.SSH_CONNECTION_STRING }}:/home/app/api_rest_user_re/docker-compose.yml"
+          scp -o StrictHostKeyChecking=no compose.yml "${{ secrets.SSH_CONNECTION_STRING }}:/home/app/api_rest_user_re/compose.yml"
 
       - name: Deploy to Docker Server
         env:
           SSH_CONNECTION_STRING: ${{ secrets.SSH_CONNECTION_STRING }}
         run: |
-          ssh -o StrictHostKeyChecking=no "${{ secrets.SSH_CONNECTION_STRING }}" "docker-compose -f /home/app/api_rest_user_re/docker-compose.yml down"
-          ssh -o StrictHostKeyChecking=no "${{ secrets.SSH_CONNECTION_STRING }}" "docker-compose -f /home/app/api_rest_user_re/docker-compose.yml pull apiuser"
-          ssh -o StrictHostKeyChecking=no "${{ secrets.SSH_CONNECTION_STRING }}" "docker-compose -f /home/app/api_rest_user_re/docker-compose.yml up -d"
+          ssh -o StrictHostKeyChecking=no "${{ secrets.SSH_CONNECTION_STRING }}" "docker-compose -f /home/app/api_rest_user_re/compose.yml down"
+          ssh -o StrictHostKeyChecking=no "${{ secrets.SSH_CONNECTION_STRING }}" "docker-compose -f /home/app/api_rest_user_re/compose.yml pull apiuser"
+          ssh -o StrictHostKeyChecking=no "${{ secrets.SSH_CONNECTION_STRING }}" "docker-compose -f /home/app/api_rest_user_re/compose.yml up -d"
