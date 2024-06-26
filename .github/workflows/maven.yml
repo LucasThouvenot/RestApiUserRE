@@ -53,4 +53,6 @@ jobs:
         env:
           SSH_CONNECTION_STRING: ${{ secrets.SSH_CONNECTION_STRING }}
         run: |
+          ssh -o StrictHostKeyChecking=no "${{ secrets.SSH_CONNECTION_STRING }}" "docker-compose -f /home/app/api_rest_user_re/compose.yaml down"
+          ssh -o StrictHostKeyChecking=no "${{ secrets.SSH_CONNECTION_STRING }}" "docker-compose -f /home/app/api_rest_user_re/compose.yaml pull apiuser"
           ssh -o StrictHostKeyChecking=no "${{ secrets.SSH_CONNECTION_STRING }}" "docker-compose -f /home/app/api_rest_user_re/compose.yaml up -d"
