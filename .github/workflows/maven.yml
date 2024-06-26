@@ -24,7 +24,7 @@ jobs:
         run: mvn -B package -DskipTests --file pom.xml
 
       - name: Build Docker image
-        run: docker build . -t touvtouv/api_rest_u_re:latest
+        run: docker build . -t ${{ secrets.DOCKER_HUB_USERNAME }}/api_rest_user_re:latest
 
       - name: Log in to Docker Hub
         env:
@@ -33,15 +33,18 @@ jobs:
         run: echo "${{ secrets.DOCKER_HUB_PASSWORD }}" | docker login -u "${{ secrets.DOCKER_HUB_USERNAME }}" --password-stdin
 
       - name: Push Docker image
-        run: docker push touvtouv/api_rest_u_re:latest
+        run: docker push ${{ secrets.DOCKER_HUB_USERNAME }}/api_rest_user_re:latest
 
       - name: Install sshpass
         run: sudo apt-get install -y sshpass
 
-      - name: Set up SSH key
+      - name: Add SSH key
         uses: webfactory/ssh-agent@v0.5.3
         with:
           ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
+
+      - name: Add GitHub.com to known_hosts
+        run: ssh-keyscan github.com >> ~/.ssh/known_hosts
 
       - name: Copy compose.yaml to server
         env:
@@ -52,7 +55,12 @@ jobs:
       - name: Deploy to Docker Server
         env:
           SSH_CONNECTION_STRING: ${{ secrets.SSH_CONNECTION_STRING }}
+          SSH_PASSWORD: ${{ secrets.SSH_PASSWORD }}
+          DOCKER_HUB_USERNAME: ${{ secrets.DOCKER_HUB_USERNAME }}
+          DOCKER_HUB_PASSWORD: ${{ secrets.DOCKER_HUB_PASSWORD }}
         run: |
-          echo "${{ secrets.SSH_PASSWORD }}" | sshpass -P "password:" ssh -o StrictHostKeyChecking=no "${{ secrets.SSH_CONNECTION_STRING }}" "echo '${{ secrets.SSH_PASSWORD }}' | sudo -S docker-compose -f /home/app/api_rest_user_re/compose.yaml down"
-          echo "${{ secrets.SSH_PASSWORD }}" | sshpass -P "password:" ssh -o StrictHostKeyChecking=no "${{ secrets.SSH_CONNECTION_STRING }}" "echo '${{ secrets.SSH_PASSWORD }}' | sudo -S docker-compose -f /home/app/api_rest_user_re/compose.yaml pull apiuser"
-          echo "${{ secrets.SSH_PASSWORD }}" | sshpass -P "password:" ssh -o StrictHostKeyChecking=no "${{ secrets.SSH_CONNECTION_STRING }}" "echo '${{ secrets.SSH_PASSWORD }}' | sudo -S docker-compose -f /home/app/api_rest_user_re/compose.yaml up -d"
+          echo "${{ secrets.SSH_PASSWORD }}" | sshpass -P "password:" ssh -o StrictHostKeyChecking=no "${{ secrets.SSH_CONNECTION_STRING }}" "
+          echo '${{ secrets.SSH_PASSWORD }}' | sudo -S docker login -u '${{ secrets.DOCKER_HUB_USERNAME }}' -p '${{ secrets.DOCKER_HUB_PASSWORD }}' &&
+          sudo docker-compose -f /home/app/api_rest_user_re/compose.yaml down &&
+          sudo docker-compose -f /home/app/api_rest_user_re/compose.yaml pull apiuser &&
+          sudo docker-compose -f /home/app/api_rest_user_re/compose.yaml up -d"
