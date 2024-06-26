@@ -24,7 +24,7 @@ jobs:
         run: mvn -B package -DskipTests --file pom.xml
 
       - name: Build Docker image
-        run: docker build . -t ${{ secrets.DOCKER_HUB_USERNAME }}/api_rest_user_re:latest
+        run: docker build . -t touvtouv/api_rest_u_re:latest
 
       - name: Log in to Docker Hub
         env:
@@ -33,7 +33,7 @@ jobs:
         run: echo "${{ secrets.DOCKER_HUB_PASSWORD }}" | docker login -u "${{ secrets.DOCKER_HUB_USERNAME }}" --password-stdin
 
       - name: Push Docker image
-        run: docker push ${{ secrets.DOCKER_HUB_USERNAME }}/api_rest_user_re:latest
+        run: docker push touvtouv/api_rest_u_re:latest
 
       - name: Install sshpass
         run: sudo apt-get install -y sshpass
