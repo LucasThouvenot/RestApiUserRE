@@ -50,17 +50,16 @@ jobs:
         env:
           SSH_CONNECTION_STRING: ${{ secrets.SSH_CONNECTION_STRING }}
         run: |
-          scp -o StrictHostKeyChecking=no compose.yaml "${{ secrets.SSH_CONNECTION_STRING }}:/home/app/api_rest_user_re/compose.yaml"
+          scp -o StrictHostKeyChecking=no compose.yaml "${{ secrets.SSH_CONNECTION_STRING }}:/home/cda-l16/Api/compose.yaml"
 
       - name: Deploy to Docker Server
         env:
           SSH_CONNECTION_STRING: ${{ secrets.SSH_CONNECTION_STRING }}
-          SSH_PASSWORD: ${{ secrets.SSH_PASSWORD }}
           DOCKER_HUB_USERNAME: ${{ secrets.DOCKER_HUB_USERNAME }}
           DOCKER_HUB_PASSWORD: ${{ secrets.DOCKER_HUB_PASSWORD }}
         run: |
-          echo "${{ secrets.SSH_PASSWORD }}" | sshpass -P "password:" ssh -o StrictHostKeyChecking=no "${{ secrets.SSH_CONNECTION_STRING }}" "
-          echo '${{ secrets.SSH_PASSWORD }}' | sudo -S docker login -u '${{ secrets.DOCKER_HUB_USERNAME }}' -p '${{ secrets.DOCKER_HUB_PASSWORD }}' &&
-          sudo docker-compose -f /home/app/api_rest_user_re/compose.yaml down &&
-          sudo docker-compose -f /home/app/api_rest_user_re/compose.yaml pull apiuser &&
-          sudo docker-compose -f /home/app/api_rest_user_re/compose.yaml up -d"
+          ssh -o StrictHostKeyChecking=no "${{ secrets.SSH_CONNECTION_STRING }}" "
+          docker login -u '${{ secrets.DOCKER_HUB_USERNAME }}' -p '${{ secrets.DOCKER_HUB_PASSWORD }}' &&
+          docker-compose -f /home/cda-l16/Api/compose.yaml down &&
+          docker-compose -f /home/cda-l16/Api/compose.yaml pull apiuser &&
+          docker-compose -f /home/cda-l16/Api/compose.yaml up -d"
