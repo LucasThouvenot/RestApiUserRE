@@ -16,6 +16,24 @@ services:
     volumes:
       - mysql_data:/var/lib/mysql
 
+  apiuser:
+    image: touvtouv/api_rest_user_re:latest
+    container_name: apiuser_re
+    ports:
+      - "8082:8080"
+    depends_on:
+      - mysql
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:mysql://mysql:3306/base_user_RE?serverTimezone=UTC&createDatabaseIfNotExist=true
+      SPRING_DATASOURCE_USERNAME: root
+      SPRING_DATASOURCE_PASSWORD: root_password
+      SPRING_DATASOURCE_DRIVER_CLASS_NAME: com.mysql.cj.jdbc.Driver
+      SPRING_JPA_PROPERTIES_HIBERNATE_DIALECT: org.hibernate.dialect.MySQLDialect
+      SPRING_JPA_HIBERNATE_DDL_AUTO: create
+      SPRING_SQL_INIT_PLATFORM: jeu-essai
+      SPRING_SQL_INIT_MODE: always
+      SPRING_JPA_DEFER_DATASOURCE_INITIALIZATION: "true"
+      SERVER_PORT: 8082
 
   phpmyadmin:
     image: phpmyadmin/phpmyadmin:latest
@@ -25,29 +43,11 @@ services:
       - "8084:80"
     environment:
       PMA_HOST: mysql
-      MYSQL_ROOT_PASSWORD: root_password
-
-  maven:
-    build: .
-    container_name: apiuser_re
-    ports:
-      - "8082:8080"
-    volumes:
-      - ./src:/var/www/html
+      PMA_PORT: 3306
+      PMA_USER: root
+      PMA_PASSWORD: root_password
     depends_on:
       - mysql
-    environment:
-      SPRING_DATASOURCE_URL: jdbc:mysql://mysql:3306/base_user_RE?serverTimezone=UTC&createDatabaseIfNotExist=true
-      SPRING_DATASOURCE_USERNAME: root
-      SPRING_DATASOURCE_PASSWORD: root_password
-      SPRING_DATASOURCE_DRIVER_CLASS_NAME: com.mysql.cj.jdbc.Driver
-      SPRING_JPA_PROPERTIES_HIBERNATE_DIALECT: org.hibernate.dialect.MySQLDialect
-      SPRING_JPA_HIBERNATE_DDL_AUTO: update
-      SPRING_SQL_INIT_PLATFORM: mysql
-      SPRING_SQL_INIT_MODE: always
-      SPRING_JPA_DEFER_DATASOURCE_INITIALIZATION: true
-      SERVER_PORT: 8082
-
 
 volumes:
   mysql_data:
