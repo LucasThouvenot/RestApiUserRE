@@ -63,3 +63,4 @@ jobs:
           docker-compose -f /home/cda-l16/Api/compose.yaml down &&
           docker-compose -f /home/cda-l16/Api/compose.yaml pull apiuser &&
           docker-compose -f /home/cda-l16/Api/compose.yaml up -d"
+          docker restart apiuser_re

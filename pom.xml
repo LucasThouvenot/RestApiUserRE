@@ -9,12 +9,12 @@
 		<version>3.2.1</version>
 		<relativePath/> <!-- lookup parent from repository -->
 	</parent>
-	<groupId>edu.fbansept</groupId>
+	<groupId>com.awaDev</groupId>
 	<artifactId>RestApiUserRE</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
 	<packaging>war</packaging>
-	<name>demo</name>
-	<description>Demo project for Spring Boot</description>
+	<name>RestApiUserRE</name>
+	<description>RestApiUserRE</description>
 	<properties>
 		<java.version>17</java.version>
 	</properties>
