@@ -1,13 +1,10 @@
-FROM maven:3.8.5 as maven
-#LABEL COMPANY="awadev"
-#LABEL MAINTAINER="support@awadev.com"
-#LABEL APPLICATION="RestApiUserRE"
-
+# Étape de build avec Maven
+FROM maven:3.8.5 AS maven
 WORKDIR /usr/src/app
 COPY . /usr/src/app
 RUN mvn clean package -DskipTests
 
-
+# Étape de runtime avec Tomcat
 FROM tomcat:10-jdk21
 ARG TOMCAT_FILE_PATH=/docker
 
@@ -19,9 +16,10 @@ ENV SAMPLE_APP_CONFIG=${APP_DATA_FOLDER}/config/
 WORKDIR /usr/local/tomcat/webapps/
 COPY --from=maven /usr/src/app/target/*.war /usr/local/tomcat/webapps/ROOT.war
 
+# Configure Tomcat (uncomment and modify as needed)
 #COPY ${TOMCAT_FILE_PATH}/* ${CATALINA_HOME}/conf/
 
 WORKDIR $APP_DATA_FOLDER
 
-EXPOSE 8082
+EXPOSE 8080
 ENTRYPOINT ["catalina.sh", "run"]

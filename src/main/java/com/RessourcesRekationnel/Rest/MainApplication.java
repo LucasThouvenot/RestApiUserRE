@@ -35,4 +35,4 @@ public class MainApplication extends SpringBootServletInitializer {
 		objectMapper.disable(SerializationFeature.FAIL_ON_EMPTY_BEANS);
 		return objectMapper;
 	}
-}
+}//oscour
